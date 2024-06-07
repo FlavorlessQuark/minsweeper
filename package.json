@@ -1,26 +1,36 @@
 {
-  "name": "the-minesss",
-  "version": "0.1.0",
-  "private": true,
+  "name": "my-app",
+  "version": "0.2.0",
+  "author": "Your Name",
+  "description": "React-TypeScript-Electron sample with Create React App and Electron Builder",
   "homepage": ".",
   "main": "build/electron/main.js",
+  "private": true,
   "dependencies": {
-    "@testing-library/jest-dom": "^5.17.0",
+    "@testing-library/jest-dom": "^5.16.5",
     "@testing-library/react": "^13.4.0",
-    "@testing-library/user-event": "^13.5.0",
-    "@types/electron-devtools-installer": "^2.2.5",
-    "@types/jest": "^27.5.2",
-    "@types/node": "^16.18.98",
-    "@types/react": "^18.3.3",
-    "@types/react-dom": "^18.3.0",
+    "@testing-library/user-event": "^14.4.3",
+    "@types/electron-devtools-installer": "^2.2.2",
+    "@types/jest": "^29.4.0",
+    "@types/node": "^18.13.0",
+    "@types/react": "^18.0.28",
+    "@types/react-dom": "^18.0.11",
     "electron-devtools-installer": "^3.2.0",
-    "electron-is-dev": "^3.0.1",
-    "electron-reload": "^2.0.0-alpha.1",
-    "react": "^18.3.1",
-    "react-dom": "^18.3.1",
+    "electron-reload": "^1.5.0",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
     "react-scripts": "5.0.1",
     "typescript": "^4.9.5",
-    "web-vitals": "^2.1.4"
+    "web-vitals": "^3.1.1"
+  },
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test",
+    "postinstall": "electron-builder install-app-deps",
+    "electron:dev": "concurrently \"cross-env BROWSER=none npm run start\" \"wait-on http://127.0.0.1:3000 && tsc -p electron -w\" \"wait-on http://127.0.0.1:3000 && tsc -p electron && electron .\"",
+    "electron:build": "npm run build && tsc -p electron && electron-builder",
+    "eject": "react-scripts eject"
   },
   "build": {
     "extends": null,
@@ -30,15 +40,6 @@
     "directories": {
       "buildResources": "assets"
     }
-  },
-  "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject",
-    "postinstall": "electron-builder install-app-deps",
-    "electron:dev": "concurrently \"cross-env BROWSER=none npm run start\" \"wait-on http://127.0.0.1:3000 && tsc -p electron -w\" \"wait-on http://127.0.0.1:3000 && tsc -p electron && electron .\"",
-    "electron:build": "npm run build && tsc -p electron && electron-builder"
   },
   "eslintConfig": {
     "extends": [
@@ -59,10 +60,10 @@
     ]
   },
   "devDependencies": {
-    "concurrently": "^8.2.2",
+    "concurrently": "^7.6.0",
     "cross-env": "^7.0.3",
-    "electron": "^30.1.0",
-    "electron-builder": "^25.0.0-alpha.9",
-    "wait-on": "^7.2.0"
+    "electron": "^23.3.13",
+    "electron-builder": "^23.6.0",
+    "wait-on": "^7.0.1"
   }
 }
