@@ -1,7 +1,7 @@
 import { useEffect, useRef } from 'react';
 import logo from './logo.svg';
 
-import { render_loop } from './renderer';
+import { getRenderManager } from './renderer';
 import { render } from 'react-dom';
 
 function App() {
@@ -9,7 +9,8 @@ function App() {
 
 
     useEffect(() => {
-        animRef.current = requestAnimationFrame(render_loop);
+        const renderManager = getRenderManager();
+        animRef.current = requestAnimationFrame(renderManager.getRenderLoop());
         return () => cancelAnimationFrame(animRef.current);
     }, []);
 
