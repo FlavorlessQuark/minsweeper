@@ -1,7 +1,7 @@
 import { useEffect, useRef } from 'react';
 import logo from './logo.svg';
 
-import { getRenderManager } from './renderer';
+import { getRenderManager } from './renderManager';
 import { render } from 'react-dom';
 
 function App() {
