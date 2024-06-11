@@ -28,6 +28,7 @@ export class MinesweepBoard {
             -this.h + 1,//Down right
             -this.h - 1,//Down Left
         ]
+        console.log("New booard w:%d h:%d mines: %d", w, h, mines)
     }
 
     public generate = (x: number, y: number) =>
@@ -36,6 +37,7 @@ export class MinesweepBoard {
 
 
         this.grid[y * this.w + x] = "empty";
+        this._grid[y * this.w + x] = "empty";
 
         for (let i = 0; i < this.mines; i++)
         {
@@ -47,7 +49,9 @@ export class MinesweepBoard {
         {
             for (let dir of this.dirs)
             {
-                if (coord + dir >= 0 && coord + dir < this.w * this.h){
+                let x = coord + dir % this.w;
+                let y = coord + dir / this.w;
+                if (coord + dir >= 0 && coord + dir < this.w * this.h && coords + dir ){
                     if (this._grid[coord + dir] == "empty")
                         this._grid[coord + dir] = 1;
                     else if (typeof this._grid[coord + dir] == "number")
@@ -72,7 +76,7 @@ export class MinesweepBoard {
             for (let dir of this.dirs)
             {
                 if (coord + dir >= 0 && coord + dir < this.w * this.h)
-                    if (this._grid[coord + dir] == "empty") {
+                    if (this._grid[coord + dir] == "empty" && this.grid[coord + dir] == "unknown") {
                         this.grid[coord + dir] = "empty"
                         cell_lst.push(coord + dir);
                     }
@@ -80,5 +84,23 @@ export class MinesweepBoard {
                         this.grid[coord + dir] = this._grid[coord + dir];
             }
         }
+    }
+
+    public _print = () => {
+        let intern_str = "Intern grid : \n";
+        let extern_str = "Visible grid : \n";
+
+        console.log("...printing...")
+
+        for (let i = 0; i < this._grid.length; i++) {
+            if (i % this.w == 0) {
+                intern_str += "\n";
+                extern_str += "\n";
+            }
+            intern_str += this._grid[i].toString() + "\t";
+            extern_str += this.grid[i].toString() + "\t";
+        }
+        console.log(intern_str)
+        console.log(extern_str)
     }
 }
