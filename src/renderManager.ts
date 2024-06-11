@@ -23,9 +23,6 @@ class RenderManager {
       antialias: false,
       canvas: canvas,
     });
-    console.log("renderer", this.renderer);
-    document.body.appendChild(this.renderer.domElement);
-
 
     this.scene = new Scene();
 
