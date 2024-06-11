@@ -2,12 +2,13 @@ import { CellState } from "./minesweepRenderer";
 import { Coord, randomIntFromInterval } from "./utils";
 
 export class MinesweepBoard {
-    w: number;
-    h: number;
-    mines: number;
-    _grid: CellState[] = [];
-    grid: CellState[] = [];
-    dirs: Coord[] = [];
+    private _grid: CellState[] = [];
+    private dirs: Coord[] = [];
+
+    public w: number;
+    public h: number;
+    public mines: number;
+    public grid: CellState[] = [];
 
     constructor(w:number, h:number, mines:number){
         this.w = w;
