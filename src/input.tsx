@@ -29,5 +29,11 @@ export class InputCollector {
         })
     }
 
+    public poll = () => {
+        let res = {...this.inputs};
+        this.inputs.actions.length = 0;
+        this.inputs.keys.length = 0;
 
+        return res;
+    }
 }

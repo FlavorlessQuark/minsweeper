@@ -30,7 +30,7 @@ export class MinesweepBoard {
         ]
     }
 
-    generate = (x: number, y: number) =>
+    public generate = (x: number, y: number) =>
     {
         let mine_coords: number[] = [];
 
@@ -59,7 +59,7 @@ export class MinesweepBoard {
     }
 
 
-    reveal = (x: number, y:number) => {
+    public reveal = (x: number, y:number) => {
         let position = y * this.w + x;
         let cell_lst = [position]
 
