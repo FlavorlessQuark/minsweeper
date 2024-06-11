@@ -18,7 +18,7 @@ function App() {
 
 
         board.generate(2,2);
-        board._print();
+        // board._print();
 
         animRef.current = requestAnimationFrame(renderManager.getRenderLoop());
         return () => cancelAnimationFrame(animRef.current);
