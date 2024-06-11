@@ -51,20 +51,13 @@ class RenderManager {
     // `this` ends up being undefined...
     const loop = () => {
       this.minesweepRenderer.renderGameState({
-        gridDimensions: [2, 2],
-        gridState: [0, 1, 0, 1],
+        gridDimensions: [4, 4],
+        gridState: [1, 2, 3, 4, 5, 6, 7, 8, "empty", "mine", "flag", "unknown", 1, 2, 3, 4],
       });
 
-      const geometry = new BoxGeometry( 1, 1, 1 ); 
-      const material = new MeshBasicMaterial( {color: 0x00ff00} ); 
-      const cube = new Mesh( geometry, material );
-      cube.translateZ(-6);
-      this.scene.add(cube);
-
-      // console.log(this.scene);
       this.renderer.render(this.scene, this.camera);
 
-      this.scene.remove(cube);
+      // this.scene.remove(cube);
       requestAnimationFrame(loop);
     }
     return loop;
