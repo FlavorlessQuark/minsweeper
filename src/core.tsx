@@ -44,6 +44,7 @@ export class MinesweepBoard {
     private coordToAbsCoord = (x:number, y:number) =>
     {
         return y * this.w + x;
+
     }
 
     private coordFromAbsCoord = (coord : number) =>
@@ -51,6 +52,11 @@ export class MinesweepBoard {
         return {x: coord % this.w, y : Math.floor(coord / this.w)}
     }
 
+    public reset = () => {
+         this._grid.fill("empty");
+         this.grid.fill("unknown");
+         this.generate(1,1);
+    }
 
     public generate = (x: number, y: number) =>
     {
