@@ -2,25 +2,39 @@ import { useEffect, useRef } from 'react';
 
 import styled from 'styled-components';
 import { MinesweepBoard } from './core';
-import { getRenderManager } from './renderManager';
+import { RenderManager } from './renderManager';
+import { I_MinesweeperData } from './utils';
+
+let data:I_MinesweeperData;
 
 function App() {
     const animRef = useRef<number>(0);
     const boardRef = useRef<MinesweepBoard | undefined>(undefined);
+    const renderRef = useRef<RenderManager | undefined>(undefined);
 
     useEffect(() => {
-        const renderManager = getRenderManager();
         console.log("UseEFfect")
+        if (data === undefined) {
+            data = {
+                _grid: [],
+                grid: [],
+                w: 0,
+                h: 0,
+                mines: 0,
+                coins:0
+            }
+        }
         if (boardRef.current == undefined) {
 
-            const board: MinesweepBoard = new MinesweepBoard(5 ,5, 1);
-
-            board.generate(2,2);
+            const board:MinesweepBoard = new MinesweepBoard(data);
+            board.newBoard(5, 5, 3);
+            board.generate(5,5);
             boardRef.current = board;
         }
+        if (renderRef.current == undefined)
+            renderRef.current = new RenderManager(data)
         // board._print();
-
-        animRef.current = requestAnimationFrame(renderManager.getRenderLoop());
+        animRef.current = requestAnimationFrame(renderRef.current.getRenderLoop());
         return () => cancelAnimationFrame(animRef.current);
     }, []);
 
