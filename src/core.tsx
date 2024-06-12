@@ -1,25 +1,8 @@
 import { CellState } from "./minesweepRenderer";
-import { Coord, randomIntFromInterval } from "./utils";
+import { Coord, I_MinesweeperData, randomIntFromInterval } from "./utils";
 
 export class MinesweepBoard {
-    private _grid: CellState[] = [];
-    private dirs: Coord[] = [];
-
-    public w: number;
-    public h: number;
-    public mines: number;
-    public grid: CellState[] = [];
-
-    constructor(w:number, h:number, mines:number){
-        this.w = w;
-        this.h = h;
-        this.mines = mines;
-        this._grid = new Array<number>(w * h);
-        this._grid.fill("empty");
-
-        this.grid = new Array<number>(w * h);
-        this.grid.fill("unknown");
-        this.dirs = [
+    private dirs: Coord[] =  [
             {x:+1, y: 0},//right
             {x:-1, y: 0},//left
             {x:+0, y: +1},//up
@@ -28,42 +11,59 @@ export class MinesweepBoard {
             {x:-1, y: +1},//Up left
             {x:+1, y: -1},//Down right
             {x:-1, y: -1},//Down Left
-        ]
-        console.log("New booard w:%d h:%d mines: %d", w, h, mines)
+        ];
+    public data: I_MinesweeperData;
+
+    constructor(data: I_MinesweeperData){
+        this.data = data;
+
     }
 
     private isInBounds = (x:number, y:number) => {
         return (
             x >= 0      &&
-            x < this.w  &&
+            x < this.data.w  &&
             y >= 0      &&
-            y < this.h
+            y < this.data.h
         )
     }
 
     private coordToAbsCoord = (x:number, y:number) =>
     {
-        return y * this.w + x;
+        return y * this.data.w + x;
 
     }
 
     private coordFromAbsCoord = (coord : number) =>
     {
-        return {x: coord % this.w, y : Math.floor(coord / this.w)}
+        return {x: coord % this.data.w, y : Math.floor(coord / this.data.w)}
     }
 
     public reset = () => {
-         this._grid.fill("empty");
-         this.grid.fill("unknown");
-         this.generate(1,1);
+        this.data._grid.fill("empty");
+        this.data.grid.fill("unknown");
+        // this.generate(1,1);
     }
+
+    public newBoard = (w: number, h: number, mines: number) => {
+        this.data.w = w;
+        this.data.h = h;
+        this.data.mines = mines;
+
+        this.data._grid = new Array<CellState>(w * h);
+        this.data.grid = new Array<CellState>(w * h);
+
+        this.data._grid.fill("empty");
+        this.data.grid.fill("unknown");
+    }
+
 
     public generate = (x: number, y: number) =>
     {
         // let i = 0;
 
-        // for (let _y = 0; _y < this.h; _y++)
-        //     for (let _x = 0; _x < this.w; _x++)
+        // for (let _y = 0; _y < this.data.h; _y++)
+        //     for (let _x = 0; _x < this.data.w; _x++)
         //     {
         //         let c = this.coordFromAbsCoord(i);
         //         let abs = this.coordToAbsCoord(_x, _y)
@@ -79,15 +79,15 @@ export class MinesweepBoard {
         let mine_coords: number[] = [];
         let abs_coord = this.coordToAbsCoord(x, y);
 
-        this.grid[abs_coord] = "empty";
-        this._grid[abs_coord] = "empty";
+        this.data.grid[abs_coord] = "empty";
+        this.data._grid[abs_coord] = "empty";
 
-        for (let i = 0; i < this.mines; i++)
+        for (let i = 0; i < this.data.mines; i++)
         {
-            let rand = randomIntFromInterval(1, this.w * this.h);
+            let rand = randomIntFromInterval(1, this.data.w * this.data.h);
             while (rand == abs_coord)
-                rand = randomIntFromInterval(1, this.w * this.h);
-            this._grid[rand] = "mine";
+                rand = randomIntFromInterval(1, this.data.w * this.data.h);
+            this.data._grid[rand] = "mine";
             mine_coords.push(rand);
         }
 
@@ -103,15 +103,13 @@ export class MinesweepBoard {
                 console.log("testing coords %d, %d in bounds %s", x + dir.x, y + dir.y,
                  this.isInBounds(x + dir.x, y + dir.y))
                 if (this.isInBounds(x + dir.x, y + dir.y)){
-                    if (this._grid[absCoord] == "empty")
+                    if (this.data._grid[absCoord] == "empty")
                     {
-                            this._grid[absCoord] = 1;
+                            this.data._grid[absCoord] = 1;
                         console.log("PLacing 1 at %d,%d %d", x + dir.x, y + dir.y, absCoord)
                     }
-                    else if (typeof this._grid[absCoord] == "number")
-                        (this._grid[absCoord] as number) += 1;
-                    else
-                        console.log("Couldnt place mine sadge %s", this._grid[absCoord].toString())
+                    else if (typeof this.data._grid[absCoord] == "number")
+                        (this.data._grid[absCoord] as number) += 1;
                 }
             }
         }
@@ -120,14 +118,14 @@ export class MinesweepBoard {
 
 
     public reveal = (x: number, y:number) => {
-        let position = y * this.w + x;
+        let position = y * this.data.w + x;
         let cell_lst = [position]
 
-        this.grid[position] = this._grid[position];
+        this.data.grid[position] = this.data._grid[position];
 
 
-        this._print();
-        if (this._grid[position] != "empty")
+        // this._print();
+        if (this.data._grid[position] != "empty")
             return ;
         for (let coord of cell_lst)
         {
@@ -136,16 +134,16 @@ export class MinesweepBoard {
                 let {x, y} = this.coordFromAbsCoord(coord);
                 let absCoord = this.coordToAbsCoord(x + dir.x, y + dir.y);
 
-                if (absCoord >= 0 && absCoord < this.w * this.h)
-                    if (this._grid[absCoord] == "empty" && this.grid[absCoord] == "unknown") {
-                        this.grid[absCoord] = "empty"
+                if (absCoord >= 0 && absCoord < this.data.w * this.data.h)
+                    if (this.data._grid[absCoord] == "empty" && this.data.grid[absCoord] == "unknown") {
+                        this.data.grid[absCoord] = "empty"
                         cell_lst.push(absCoord);
                     }
-                    else if (typeof this._grid[absCoord] == "number")
-                        this.grid[absCoord] = this._grid[absCoord];
+                    else if (typeof this.data._grid[absCoord] == "number")
+                        this.data.grid[absCoord] = this.data._grid[absCoord];
             }
         }
-        this._print();
+        // this._print();
     }
 
     public _print = () => {
@@ -154,13 +152,13 @@ export class MinesweepBoard {
 
         console.log("...printing...")
 
-        for (let i = 0; i < this._grid.length; i++) {
-            if (i % this.w == 0) {
+        for (let i = 0; i < this.data._grid.length; i++) {
+            if (i % this.data.w == 0) {
                 intern_str += "\n";
                 extern_str += "\n";
             }
-            intern_str += this._grid[i].toString() + "\t";
-            extern_str += this.grid[i].toString() + "\t";
+            intern_str += this.data._grid[i].toString() + "\t";
+            extern_str += this.data.grid[i].toString() + "\t";
         }
         console.log(intern_str)
         console.log(extern_str)

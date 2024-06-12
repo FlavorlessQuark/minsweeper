@@ -9,15 +9,16 @@ import {
 import { MinesweepRenderer } from "./minesweepRenderer";
 
 import { MinesweepBoard } from "./core";
+import { I_MinesweeperData } from "./utils";
 
 export class RenderManager {
   private renderer: WebGLRenderer;
   private scene: Scene;
   private camera: OrthographicCamera;
   private minesweepRenderer: MinesweepRenderer;
-  private board: MinesweepBoard;
+  private data: I_MinesweeperData;
 
-  constructor(board : MinesweepBoard
+  constructor(data : I_MinesweeperData
 ) {
     const canvas = document.getElementById("canvas");
     if (!canvas) {
@@ -29,7 +30,7 @@ export class RenderManager {
     });
     console.log("renderer", this.renderer);
 
-    this.board = board;
+    this.data = data;
     this.scene = new Scene();
 
     // Create a basic perspective camera
@@ -54,8 +55,8 @@ export class RenderManager {
     // `this` ends up being undefined...
     const loop = () => {
       this.minesweepRenderer.renderGameState({
-        gridDimensions: [this.board.w, this.board.h],
-        gridState: this.board.grid,
+        gridDimensions: [this.data.w, this.data.h],
+        gridState: this.data.grid,
       });
 
       this.renderer.render(this.scene, this.camera);
