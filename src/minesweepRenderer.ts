@@ -1,4 +1,5 @@
-import { BoxGeometry, BufferGeometry, Float32BufferAttribute, Group, Material, Matrix4, Mesh, MeshBasicMaterial, Object3D, Scene, Texture, TextureLoader, Vector3 } from "three";
+import { BoxGeometry, BufferGeometry, Camera, Float32BufferAttribute, Group, Material, Matrix4, Mesh, MeshBasicMaterial, Object3D, Raycaster, Scene, Texture, TextureLoader, Vector2, Vector3 } from "three";
+import { Inputs } from "./input";
 
 export type CellState = "mine" | "flag" | "empty" | "unknown" | number;
 
@@ -116,12 +117,30 @@ export class MinesweepRenderer {
 
       const mesh = new Mesh(geometryWithMaterial.geometry, geometryWithMaterial.material);
       mesh.applyMatrix4(transform);
-      mesh.name = `index: (${index})`;
+      mesh.name = `${xCoordinate}:${yCoordinate}`;
       this.group.add(mesh);
     });
   }
 
-  public getLastFrameActions(): MinesweepAction[] {
-    return [];
+  /**
+   * converts raw inputs into MinesweepActions by raycasting the x,y
+   * location to a minesweeper cell
+   */
+  public getMinesweepActions(rawInputs: Inputs, camera: Camera): MinesweepAction[] {
+    const minesweepActions: MinesweepAction[] = [];
+    for (const mouseClick of rawInputs.mouseClicks) {
+      const raycaster = new Raycaster();
+      raycaster.setFromCamera(new Vector2(mouseClick.x, mouseClick.y), camera);
+      const intersects = raycaster.intersectObjects(this.group.children);
+      if (intersects.length) {
+        const objectName = intersects[0].object.name;
+        const [xStr, yStr] = objectName.split(":");
+        minesweepActions.push({
+          coordinate: [Number(xStr), Number(yStr)],
+          type: "leftClick",
+        });
+      }
+    }
+    return minesweepActions;
   }
 }

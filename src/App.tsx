@@ -13,8 +13,7 @@ function App() {
         console.log("UseEFfect")
         if (boardRef.current == undefined) {
 
-            const board:MinesweepBoard = new MinesweepBoard(5 ,5, 1);
-
+            const board: MinesweepBoard = new MinesweepBoard(5 ,5, 1);
 
             board.generate(2,2);
             boardRef.current = board;
