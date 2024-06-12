@@ -2,26 +2,25 @@ import { useEffect, useRef } from 'react';
 
 import styled from 'styled-components';
 import { MinesweepBoard } from './core';
-import { getRenderManager } from './renderManager';
+import { RenderManager } from './renderManager';
 
 function App() {
     const animRef = useRef<number>(0);
     const boardRef = useRef<MinesweepBoard | undefined>(undefined);
+    const renderRef = useRef<RenderManager | undefined>(undefined);
 
     useEffect(() => {
-        const renderManager = getRenderManager();
         console.log("UseEFfect")
         if (boardRef.current == undefined) {
 
             const board:MinesweepBoard = new MinesweepBoard(5 ,5, 1);
-
-
             board.generate(2,2);
             boardRef.current = board;
         }
+        if (renderRef.current == undefined)
+            renderRef.current = new RenderManager(boardRef.current)
         // board._print();
-
-        animRef.current = requestAnimationFrame(renderManager.getRenderLoop());
+        animRef.current = requestAnimationFrame(renderRef.current.getRenderLoop());
         return () => cancelAnimationFrame(animRef.current);
     }, []);
 

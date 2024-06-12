@@ -8,13 +8,17 @@ import {
 } from "three";
 import { MinesweepRenderer } from "./minesweepRenderer";
 
-class RenderManager {
+import { MinesweepBoard } from "./core";
+
+export class RenderManager {
   private renderer: WebGLRenderer;
   private scene: Scene;
   private camera: OrthographicCamera;
   private minesweepRenderer: MinesweepRenderer;
-  
-  constructor() {
+  private board: MinesweepBoard;
+
+  constructor(board : MinesweepBoard
+) {
     const canvas = document.getElementById("canvas");
     if (!canvas) {
       throw "Canvas not inialized";
@@ -23,7 +27,9 @@ class RenderManager {
       antialias: false,
       canvas: canvas,
     });
+    console.log("renderer", this.renderer);
 
+    this.board = board;
     this.scene = new Scene();
 
     // Create a basic perspective camera
@@ -48,8 +54,8 @@ class RenderManager {
     // `this` ends up being undefined...
     const loop = () => {
       this.minesweepRenderer.renderGameState({
-        gridDimensions: [4, 4],
-        gridState: [1, 2, 3, 4, 5, 6, 7, 8, "empty", "mine", "flag", "unknown", 1, 2, 3, 4],
+        gridDimensions: [this.board.w, this.board.h],
+        gridState: this.board.grid,
       });
 
       this.renderer.render(this.scene, this.camera);
@@ -61,12 +67,12 @@ class RenderManager {
   }
 }
 
-let renderManagerInstance: RenderManager | undefined;
+// let renderManagerInstance: RenderManager | undefined;
 
 // initialize singleton render manager
-export function getRenderManager(): RenderManager {
-  if (renderManagerInstance === undefined) {
-    renderManagerInstance = new RenderManager();
-  }
-  return renderManagerInstance;
-}
+// export function getRenderManager(): RenderManager {
+//   if (renderManagerInstance === undefined) {
+//     renderManagerInstance = new RenderManager();
+//   }
+//   return renderManagerInstance;
+// }
