@@ -84,29 +84,26 @@ export class MinesweepBoard {
 
         for (let i = 0; i < this.data.mines; i++)
         {
-            let rand = randomIntFromInterval(1, this.data.w * this.data.h);
-            while (rand == abs_coord)
-                rand = randomIntFromInterval(1, this.data.w * this.data.h);
+            let rand = randomIntFromInterval(1, this.data.w * this.data.h - 1);
+            while (rand == abs_coord || this.data._grid[rand] == "mine")
+                rand = randomIntFromInterval(1, this.data.w * this.data.h - 1);
             this.data._grid[rand] = "mine";
             mine_coords.push(rand);
+            console.log("New mine at %f max : %d", rand,  this.data.w * this.data.h - 1)
         }
 
         for (let coord of mine_coords)
         {
             let c = this.coordFromAbsCoord(coord);
-            console.log("Mine coords %d %d,%d",coord, c.x, c.y)
             for (let dir of this.dirs)
             {
                 let {x, y} = this.coordFromAbsCoord(coord);
                 let absCoord = this.coordToAbsCoord(x + dir.x, y + dir.y);
 
-                console.log("testing coords %d, %d in bounds %s", x + dir.x, y + dir.y,
-                 this.isInBounds(x + dir.x, y + dir.y))
                 if (this.isInBounds(x + dir.x, y + dir.y)){
                     if (this.data._grid[absCoord] == "empty")
                     {
                             this.data._grid[absCoord] = 1;
-                        console.log("PLacing 1 at %d,%d %d", x + dir.x, y + dir.y, absCoord)
                     }
                     else if (typeof this.data._grid[absCoord] == "number")
                         (this.data._grid[absCoord] as number) += 1;

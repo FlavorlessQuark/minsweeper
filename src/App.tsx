@@ -62,7 +62,7 @@ export default App;
 const Container = styled.div`
     display: flex;
     width: 100vw;
-    height: 100vh;
+    // height: 100vh;
     flex-direction: row;
 `
 

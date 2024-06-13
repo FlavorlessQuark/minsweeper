@@ -1,3 +1,4 @@
+import { Console } from "console";
 import { MinesweepAction } from "./minesweepRenderer"
 
 export interface Inputs {
@@ -12,12 +13,13 @@ export class FrameInputCollector {
 
     constructor(canvas: HTMLElement) {
         canvas.addEventListener("click", (event: MouseEvent) => {
-            const x = (event.x / canvas.clientWidth) * 2 - 1;
-            const y = (event.y / canvas.clientHeight) * 2 - 1;
+             const rect = canvas.getBoundingClientRect()
+            const x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
+            const y = ((event.clientY - rect.top) / rect.height) * 2 - 1;
 
+            console.log("Cnavs clicked %f %f", x, y);
             this.tempInputs.mouseClicks.push({ x: x, y: y });
         });
-
         // window.addEventListener("keydown", (e) => {
         //     this.inputs.keys.push(e.key)
         //     console.log("Input collectroor", this.inputs);

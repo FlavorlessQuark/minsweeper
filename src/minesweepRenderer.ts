@@ -7,7 +7,7 @@ export interface MinesweepRenderState {
   gridDimensions: [number, number]; // [x, y]
   // gridState.length == gridDimensions[0] * gridDimensions[1]
   // gridState(x, y) is gridState[x + y * gridDimensions[0]]
-  gridState: CellState[]; 
+  gridState: CellState[];
 }
 
 export interface MinesweepAction {
@@ -105,7 +105,7 @@ export class MinesweepRenderer {
 
     state.gridState.forEach((cellState, index) => {
       const xCoordinate = index % state.gridDimensions[0];
-      const yCoordinate = Math.floor(index / state.gridDimensions[0]);
+      const yCoordinate = state.gridDimensions[1] - Math.floor(index / state.gridDimensions[0]) - 1;
 
       const transform = makeTransformForCell(xCoordinate, yCoordinate);
 
