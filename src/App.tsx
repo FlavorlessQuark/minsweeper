@@ -32,7 +32,7 @@ function App() {
             boardRef.current = board;
         }
         if (renderRef.current == undefined)
-            renderRef.current = new RenderManager(data)
+            renderRef.current = new RenderManager(data, boardRef.current);
         // board._print();
         animRef.current = requestAnimationFrame(renderRef.current.getRenderLoop());
         return () => cancelAnimationFrame(animRef.current);

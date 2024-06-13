@@ -19,8 +19,9 @@ export class RenderManager {
   private minesweepRenderer: MinesweepRenderer;
   private inputCollector: FrameInputCollector;
   private data: I_MinesweeperData;
+  private minesweepBoard: MinesweepBoard;
 
-  constructor(data : I_MinesweeperData) {
+  constructor(data: I_MinesweeperData, minesweepBoard: MinesweepBoard) {
     const canvas = document.getElementById("canvas");
     if (!canvas) {
       throw "Canvas not inialized";
@@ -50,6 +51,7 @@ export class RenderManager {
 
     this.minesweepRenderer = new MinesweepRenderer(this.scene);
     this.inputCollector = new FrameInputCollector(canvas);
+    this.minesweepBoard = minesweepBoard;
   }
 
   getRenderLoop() {
@@ -58,7 +60,9 @@ export class RenderManager {
     const loop = () => {
       const inputs = this.inputCollector.poll();
       const minesweepActions = this.minesweepRenderer.getMinesweepActions(inputs, this.camera);
-
+      for (const action of minesweepActions) {
+        this.minesweepBoard.reveal(action.coordinate[0], action.coordinate[1]);
+      }
 
       this.minesweepRenderer.renderGameState({
         gridDimensions: [this.data.w, this.data.h],
