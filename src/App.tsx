@@ -7,7 +7,8 @@ import { I_MinesweeperData } from './utils';
 
 let data:I_MinesweeperData;
 
-function App() {
+
+const App = () => {
     const animRef = useRef<number>(0);
     const boardRef = useRef<MinesweepBoard | undefined>(undefined);
     const renderRef = useRef<RenderManager | undefined>(undefined);
