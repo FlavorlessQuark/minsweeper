@@ -1,4 +1,5 @@
-import { CellState } from "./minesweepRenderer";
+import { getGameState } from "./App";
+import { CellState, MinesweepAction } from "./minesweepRenderer";
 import { Coord, I_MinesweeperData, randomIntFromInterval } from "./utils";
 
 export class MinesweepBoard {
@@ -14,9 +15,8 @@ export class MinesweepBoard {
         ];
     public data: I_MinesweeperData;
 
-    constructor(data: I_MinesweeperData){
-        this.data = data;
-
+    constructor(){
+        this.data = getGameState();
     }
 
     private isInBounds = (x:number, y:number) => {
@@ -141,6 +141,16 @@ export class MinesweepBoard {
             }
         }
         // this._print();
+    }
+
+    update(actions: MinesweepAction[]) {
+        if (this.data.resetBoard) {
+            this.newBoard(10, 10, 20);
+            this.data.resetBoard = false;
+        }
+        for (const action of actions) {
+            this.reveal(action.coordinate[0], action.coordinate[1]);
+        }
     }
 
     public _print = () => {

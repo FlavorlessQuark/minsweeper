@@ -9,10 +9,11 @@ export type Coord = {x:number, y:number}
 
 
 export interface I_MinesweeperData {
-    _grid: CellState[],
-    grid: CellState[],
-    w: number,
-    h: number,
-    mines: number,
-    coins: number
+  _grid: CellState[];
+  grid: CellState[];
+  w: number;
+  h: number;
+  mines: number;
+  resetBoard: boolean;
+  coins: number;
 }
