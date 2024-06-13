@@ -1,16 +1,23 @@
 import { useEffect, useRef } from 'react';
 
 import styled from 'styled-components';
-import { MinesweepBoard } from './core';
+import { MinesweepBoard } from './minesweepBoard';
 import { RenderManager } from './renderManager';
 import { I_MinesweeperData } from './utils';
+import { GameLogic } from './gameLogic';
 
 let data:I_MinesweeperData;
 
+export function getGameState(): I_MinesweeperData {
+    if (!data) {
+        throw "game data not initialized!";
+    }
+    return data;
+}
+
 function App() {
     const animRef = useRef<number>(0);
-    const boardRef = useRef<MinesweepBoard | undefined>(undefined);
-    const renderRef = useRef<RenderManager | undefined>(undefined);
+    const gameLogicRef = useRef<GameLogic | undefined>(undefined);
 
     useEffect(() => {
         console.log("UseEFfect")
@@ -21,20 +28,14 @@ function App() {
                 w: 0,
                 h: 0,
                 mines: 0,
-                coins:0
+                coins:0,
+                resetBoard:false,
             }
         }
-        if (boardRef.current == undefined) {
-
-            const board:MinesweepBoard = new MinesweepBoard(data);
-            board.newBoard(5, 5, 3);
-            board.generate(5,5);
-            boardRef.current = board;
-        }
-        if (renderRef.current == undefined)
-            renderRef.current = new RenderManager(data, boardRef.current);
+        if (gameLogicRef.current == undefined)
+            gameLogicRef.current = new GameLogic();
         // board._print();
-        animRef.current = requestAnimationFrame(renderRef.current.getRenderLoop());
+        animRef.current = requestAnimationFrame(gameLogicRef.current.getGameLoop());
         return () => cancelAnimationFrame(animRef.current);
     }, []);
 
@@ -46,7 +47,7 @@ function App() {
                 <Shop/>
             </ShopContainer>
             <CanvasContainer>
-                <InfoBar> <Text> Mines : </Text> <Button onClick={() => boardRef.current?.reset()}> Reset </Button></InfoBar>
+                <InfoBar> <Text> Mines : </Text> <Button onClick={() => getGameState().resetBoard = true}> Reset </Button></InfoBar>
 
                 {/* <Canvas id="canvas"/> */}
                 <Canvas id='canvas'/>
