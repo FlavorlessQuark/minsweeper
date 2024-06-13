@@ -3,16 +3,16 @@ import {
   Scene,
   WebGLRenderer,
 } from "three";
-import { MinesweepAction, MinesweepRenderer } from "./minesweepRenderer";
-import { FrameInputCollector } from "./input";
+import { MinesweepAction, GridScene } from "./gridScene";
+import { FrameInputCollector } from "../input";
 
-import { getGameState } from "./App";
+import { getGameState } from "../../App";
 
 export class RenderManager {
   private renderer: WebGLRenderer;
   private scene: Scene;
   private camera: OrthographicCamera;
-  private minesweepRenderer: MinesweepRenderer;
+  private sceneManager: GridScene;
   private inputCollector: FrameInputCollector;
 
   constructor() {
@@ -42,19 +42,19 @@ export class RenderManager {
       2,
     );
 
-    this.minesweepRenderer = new MinesweepRenderer(this.scene);
+    this.sceneManager = new GridScene(this.scene);
     this.inputCollector = new FrameInputCollector(canvas);
   }
 
-  getInputs(): MinesweepAction[] {
+  getActions(): MinesweepAction[] {
     const inputs = this.inputCollector.poll();
-    const minesweepActions = this.minesweepRenderer.getMinesweepActions(inputs, this.camera);
+    const minesweepActions = this.sceneManager.InputsToActions(inputs, this.camera);
     return minesweepActions;
   }
 
   renderFrame() {
     const gameState = getGameState();
-    this.minesweepRenderer.renderGameState({
+    this.sceneManager.renderGameState({
       gridDimensions: [gameState.w, gameState.h],
       gridState: gameState.grid,
     });

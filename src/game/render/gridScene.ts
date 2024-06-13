@@ -1,5 +1,5 @@
 import { BoxGeometry, BufferGeometry, Camera, Float32BufferAttribute, Group, Material, Matrix4, Mesh, MeshBasicMaterial, Object3D, Raycaster, Scene, Texture, TextureLoader, Vector2, Vector3 } from "three";
-import { Inputs } from "./input";
+import { Inputs } from "../input";
 
 export type CellState = "mine" | "flag" | "empty" | "unknown" | number;
 
@@ -20,7 +20,7 @@ export interface GeometryWithMaterial {
   material: Material;
 }
 
-export class MinesweepRenderer {
+export class GridScene {
   group: Group;
   cellGeometries: Map<CellState, GeometryWithMaterial> = new Map();
 
@@ -42,7 +42,7 @@ export class MinesweepRenderer {
       2, 3, 0 // second triangle
     ];
 
-    const texture = new TextureLoader().load(require("./assets/retroPack.png"));
+    const texture = new TextureLoader().load(require("../../assets/retroPack.png"));
     const material = new MeshBasicMaterial( { map: texture } );
     const makeGeometryWithMaterial = (x: number, y: number) => {
       const uvs = [
@@ -126,7 +126,7 @@ export class MinesweepRenderer {
    * converts raw inputs into MinesweepActions by raycasting the x,y
    * location to a minesweeper cell
    */
-  public getMinesweepActions(rawInputs: Inputs, camera: Camera): MinesweepAction[] {
+  public InputsToActions(rawInputs: Inputs, camera: Camera): MinesweepAction[] {
     const minesweepActions: MinesweepAction[] = [];
     for (const mouseClick of rawInputs.mouseClicks) {
       const raycaster = new Raycaster();
@@ -137,7 +137,7 @@ export class MinesweepRenderer {
         const [xStr, yStr] = objectName.split(":");
         minesweepActions.push({
           coordinate: [Number(xStr), Number(yStr)],
-          type: "leftClick",
+          type: mouseClick.button == 0 ? "leftClick" : "rightClick",
         });
       }
     }

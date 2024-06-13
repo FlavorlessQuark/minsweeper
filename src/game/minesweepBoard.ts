@@ -1,5 +1,5 @@
-import { getGameState } from "./App";
-import { CellState, MinesweepAction } from "./minesweepRenderer";
+import { getGameState } from "../App";
+import { CellState, MinesweepAction } from "./render/gridScene";
 import { Coord, I_MinesweeperData, randomIntFromInterval } from "./utils";
 
 export class MinesweepBoard {
@@ -39,11 +39,6 @@ export class MinesweepBoard {
         return {x: coord % this.data.w, y : Math.floor(coord / this.data.w)}
     }
 
-    public reset = () => {
-        this.data._grid.fill("empty");
-        this.data.grid.fill("unknown");
-        // this.generate(1,1);
-    }
 
     public newBoard = (w: number, h: number, mines: number) => {
         this.data.w = w;
@@ -60,21 +55,7 @@ export class MinesweepBoard {
 
     public generate = (x: number, y: number) =>
     {
-        // let i = 0;
 
-        // for (let _y = 0; _y < this.data.h; _y++)
-        //     for (let _x = 0; _x < this.data.w; _x++)
-        //     {
-        //         let c = this.coordFromAbsCoord(i);
-        //         let abs = this.coordToAbsCoord(_x, _y)
-        //         console.log("At : %d,%d   %d", _x, _y, i)
-
-        //         console.log("assert abs => %d == %d %s",abs, i, String(abs == i))
-        //         console.log("assert x   => %d == %d %s",_x, c.x, String(c.x == _x))
-        //         console.log("assert y   => %d == %d %s",_y, c.y, String(c.y == _y))
-        //         console.log("------------------------------------")
-        //         i++;
-            // }
         console.log("Generate....")
         let mine_coords: number[] = [];
         let abs_coord = this.coordToAbsCoord(x, y);
@@ -89,7 +70,6 @@ export class MinesweepBoard {
                 rand = randomIntFromInterval(1, this.data.w * this.data.h - 1);
             this.data._grid[rand] = "mine";
             mine_coords.push(rand);
-            console.log("New mine at %f max : %d", rand,  this.data.w * this.data.h - 1)
         }
 
         for (let coord of mine_coords)
@@ -144,12 +124,24 @@ export class MinesweepBoard {
     }
 
     update(actions: MinesweepAction[]) {
-        if (this.data.resetBoard) {
-            this.newBoard(10, 10, 20);
-            this.data.resetBoard = false;
-        }
+            // this.newBoard(10, 10, 20);
+            // this.data.resetBoard = false;
         for (const action of actions) {
-            this.reveal(action.coordinate[0], action.coordinate[1]);
+            const abscoord = this.coordToAbsCoord(action.coordinate[0], action.coordinate[1]);
+            if (this.data.state === "unset") {
+                this.generate(action.coordinate[0], action.coordinate[1]);
+                this.data.state = "set"
+            }
+            else{
+                if (action.type == "rightClick" && this.data.grid[abscoord] == "unknown")
+                {
+                    this.data.grid[abscoord] = "flag";
+                }
+                else
+                {
+                    this.reveal(action.coordinate[0], action.coordinate[1]);
+                }
+            }
         }
     }
 
